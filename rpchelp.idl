@@ -1,0 +1,48 @@
+/* %%COPYRIGHT%% */
+
+import "Unknwn.Idl";
+import "nsrtl.h";
+
+cpp_quote("")
+cpp_quote("/* %%COPYRIGHT%% */")
+cpp_quote("")
+
+#include <rpchelpi.idl>
+
+cpp_quote("/*++")
+cpp_quote("VOID")
+cpp_quote("WINAPI")
+cpp_quote("RaiseNonContinuableException(")
+cpp_quote("    _In_ DWORD Code")
+cpp_quote("    );")
+cpp_quote("--*/")
+cpp_quote("#define RaiseNonContinuableException(Code) \\")
+cpp_quote("    RaiseException(Code, EXCEPTION_NONCONTINUABLE, 0, NULL)")
+cpp_quote("")
+cpp_quote("PXMIT_TYPE")
+cpp_quote("WINAPI")
+cpp_quote("XMITTYPE_TypeToXmit(")
+cpp_quote("    _In_ ULONG Options,")
+cpp_quote("    _In_opt_ CONST VOID *TypeData,")
+cpp_quote("    _In_ ULONG Size")
+cpp_quote("    );")
+cpp_quote("")
+cpp_quote("VOID")
+cpp_quote("WINAPI")
+cpp_quote("XMITTYPE_XmitToType(")
+cpp_quote("    _In_ PXMIT_TYPE Xmit,")
+cpp_quote("    _Out_ PVOID *Type")
+cpp_quote("    );")
+cpp_quote("")
+cpp_quote("VOID")
+cpp_quote("WINAPI")
+cpp_quote("XMITTYPE_FreeType(")
+cpp_quote("    _In_opt_ PVOID *Type")
+cpp_quote("    );")
+cpp_quote("")
+cpp_quote("VOID")
+cpp_quote("WINAPI")
+cpp_quote("XMITTYPE_FreeXmit(")
+cpp_quote("    _In_opt_ XMIT_TYPE *Xmit")
+cpp_quote("    );")
+cpp_quote("")
