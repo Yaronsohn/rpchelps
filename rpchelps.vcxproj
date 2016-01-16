@@ -22,7 +22,6 @@
     <ClCompile Include="confstr.c" />
     <ClCompile Include="mem.c" />
     <ClCompile Include="multistr.c" />
-    <ClCompile Include="objattr.c" />
     <ClCompile Include="secdesc.c" />
     <ClCompile Include="xmittype.c" />
   </ItemGroup>

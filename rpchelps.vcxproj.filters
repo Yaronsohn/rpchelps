@@ -24,9 +24,6 @@
     <ClCompile Include="multistr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="objattr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="secdesc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
