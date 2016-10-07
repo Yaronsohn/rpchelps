@@ -35,7 +35,9 @@ SECURITY_DESCRIPTOR_to_xmit(
     if (SecurityDescriptor)
     {
         /* Calculate the size of a relative SD version */
-        if (!MakeSelfRelativeSD(SecurityDescriptor, NULL, &size))
+        if (!MakeSelfRelativeSD(SecurityDescriptor, NULL, &size)
+            &&
+            GetLastError() != ERROR_INSUFFICIENT_BUFFER)
         {
             RaiseNonContinuableException(GetLastError());
         }
@@ -43,13 +45,13 @@ SECURITY_DESCRIPTOR_to_xmit(
         RelativeSD = MIDL_user_allocate(size);
         if (!RelativeSD)
         {
-            RaiseNonContinuableException(RPC_S_OUT_OF_MEMORY);
+            RaiseNonContinuableException(GetLastError());
         }
 
         if (!MakeSelfRelativeSD(SecurityDescriptor, RelativeSD, &size))
         {
             MIDL_user_free(RelativeSD);
-            RaiseNonContinuableException(RPC_S_OUT_OF_MEMORY);
+            RaiseNonContinuableException(GetLastError());
         }
     }
 
@@ -103,11 +105,9 @@ SECURITY_DESCRIPTOR_from_xmit(
                         NULL,
                         &PrimaryGroupSize))
     {
-        DWORD ret = GetLastError();
-
-        if (ret != ERROR_INSUFFICIENT_BUFFER)
+        if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
         {
-            RaiseNonContinuableException(ret);
+            RaiseNonContinuableException(GetLastError());
         }
     }
 
