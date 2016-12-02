@@ -1,0 +1,128 @@
+
+cpp_quote("#ifndef _RPCHELPI_")
+cpp_quote("#define _RPCHELPI_")
+
+#ifdef DECLSPEC_ALIGN
+#undef DECLSPEC_ALIGN
+#endif
+#define DECLSPEC_ALIGN(x)
+
+typedef struct _XMIT_TYPE {
+    DWORD Size;
+    DWORD Options;
+    [size_is(Size)] BYTE Data[];
+} XMIT_TYPE, *PXMIT_TYPE;
+
+cpp_quote("#define XTO_ENCRYPTE             0x00000001")
+cpp_quote("")
+cpp_quote("#define XMIT_TYPE_SIZE(DataSize) (sizeof(XMIT_TYPE) + (DataSize))")
+cpp_quote("")
+
+typedef [transmit_as(XMIT_TYPE)] const char *LPMULTISTR;
+typedef [transmit_as(XMIT_TYPE)] const char *LPCONFIDENTIALSTR;
+
+typedef [transmit_as(XMIT_TYPE)] const wchar_t *LPMULTIWSTR;
+typedef [transmit_as(XMIT_TYPE)] const wchar_t *LPCONFIDENTIALWSTR;
+
+cpp_quote("")
+cpp_quote("#define XMIT_TYPE_SIZE(DataSize) (sizeof(XMIT_TYPE) + (DataSize))")
+cpp_quote("")
+
+/*
+ * N.B. We use PVOID for the internal pointers because we will convert the
+ * SD to relative anyway.
+ */
+cpp_quote("#if 0")
+typedef [transmit_as(XMIT_TYPE)] struct {
+    BYTE Revision;
+    BYTE Sbz1;
+    SECURITY_DESCRIPTOR_CONTROL Control;
+    PSID Owner;
+    PSID Group;
+    PACL Sacl;
+    PACL Dacl;
+} SECURITY_DESCRIPTOR;
+
+typedef struct {
+    ULONG Length;
+    HANDLE RootDirectory;
+    [unique] PUNICODE_STRING ObjectName;
+    ULONG Attributes;
+    [unique] SECURITY_DESCRIPTOR *SecurityDescriptor;
+    [unique] SECURITY_QUALITY_OF_SERVICE *SecurityQualityOfService;
+} OBJECT_ATTRIBUTES;
+
+typedef struct {
+    DWORD nLength;
+    SECURITY_DESCRIPTOR *lpSecurityDescriptor;
+    BOOL bInheritHandle;
+} SECURITY_ATTRIBUTES;
+cpp_quote("#endif")
+
+cpp_quote("#if !defined(_WS2DEF_)")
+
+//
+// Portable socket structure (RFC 2553).
+//
+// Copied from ws2def.h
+//
+typedef USHORT ADDRESS_FAMILY;
+
+//
+// Desired design of maximum size and alignment.
+// These are implementation specific.
+//
+#define _SS_MAXSIZE 128                 // Maximum size
+#define _SS_ALIGNSIZE (sizeof(__int64)) // Desired alignment
+
+//
+// Definitions used for sockaddr_storage structure paddings design.
+//
+
+#if(_WIN32_WINNT >= 0x0600)
+#define _SS_PAD1SIZE (_SS_ALIGNSIZE - sizeof(USHORT))
+#define _SS_PAD2SIZE (_SS_MAXSIZE - (sizeof(USHORT) + _SS_PAD1SIZE + _SS_ALIGNSIZE))
+#else 
+#define _SS_PAD1SIZE (_SS_ALIGNSIZE - sizeof (short))
+#define _SS_PAD2SIZE (_SS_MAXSIZE - (sizeof (short) + _SS_PAD1SIZE \
+                                                    + _SS_ALIGNSIZE))
+#endif //(_WIN32_WINNT >= 0x0600)
+
+typedef struct sockaddr_storage {
+    ADDRESS_FAMILY ss_family;      // address family
+
+    CHAR __ss_pad1[_SS_PAD1SIZE];  // 6 byte pad, this is to make
+                                   //   implementation specific pad up to
+                                   //   alignment field that follows explicit
+                                   //   in the data structure
+    __int64 __ss_align;            // Field to force desired structure
+    CHAR __ss_pad2[_SS_PAD2SIZE];  // 112 byte pad to achieve desired size;
+                                   //   _SS_MAXSIZE value minus size of
+                                   //   ss_family, __ss_pad1, and
+                                   //   __ss_align fields is 112
+} SOCKADDR_STORAGE_LH, *PSOCKADDR_STORAGE_LH;
+
+typedef struct sockaddr_storage_xp {
+    short ss_family;               // Address family.
+
+    CHAR __ss_pad1[_SS_PAD1SIZE];  // 6 byte pad, this is to make
+                                   //   implementation specific pad up to
+                                   //   alignment field that follows explicit
+                                   //   in the data structure
+    __int64 __ss_align;            // Field to force desired structure
+    CHAR __ss_pad2[_SS_PAD2SIZE];  // 112 byte pad to achieve desired size;
+                                   //   _SS_MAXSIZE value minus size of
+                                   //   ss_family, __ss_pad1, and
+                                   //   __ss_align fields is 112
+} SOCKADDR_STORAGE_XP, *PSOCKADDR_STORAGE_XP;
+
+
+#if(_WIN32_WINNT >= 0x0600)
+typedef SOCKADDR_STORAGE_LH SOCKADDR_STORAGE;
+#else
+typedef SOCKADDR_STORAGE_XP SOCKADDR_STORAGE;
+#endif
+typedef SOCKADDR_STORAGE *PSOCKADDR_STORAGE;
+cpp_quote("#endif // #if !defined(_WS2DEF_)")
+
+cpp_quote("#endif // _RPCHELPI_")
