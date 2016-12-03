@@ -28,6 +28,38 @@ cpp_quote("")
 cpp_quote("#define XMIT_TYPE_SIZE(DataSize) (sizeof(XMIT_TYPE) + (DataSize))")
 cpp_quote("")
 
+#ifdef _DEFINE_BASIC_NT_DEFS_
+cpp_quote("#if 0")
+typedef struct _UNICODE_STRING {
+    USHORT Length;
+    USHORT MaximumLength;
+#ifdef MIDL_PASS
+    [size_is(MaximumLength / 2), length_is((Length) / 2)] USHORT * Buffer;
+#else // MIDL_PASS
+    _Field_size_bytes_part_(MaximumLength, Length) PWCH   Buffer;
+#endif // MIDL_PASS
+} UNICODE_STRING;
+typedef UNICODE_STRING *PUNICODE_STRING;
+typedef const UNICODE_STRING *PCUNICODE_STRING;
+
+typedef enum _SECURITY_IMPERSONATION_LEVEL {
+    SecurityAnonymous,
+    SecurityIdentification,
+    SecurityImpersonation,
+    SecurityDelegation
+} SECURITY_IMPERSONATION_LEVEL, *PSECURITY_IMPERSONATION_LEVEL;
+
+typedef BOOLEAN SECURITY_CONTEXT_TRACKING_MODE, *PSECURITY_CONTEXT_TRACKING_MODE;
+
+typedef struct _SECURITY_QUALITY_OF_SERVICE {
+    ULONG Length;
+    SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
+    SECURITY_CONTEXT_TRACKING_MODE ContextTrackingMode;
+    BOOLEAN EffectiveOnly;
+} SECURITY_QUALITY_OF_SERVICE, *PSECURITY_QUALITY_OF_SERVICE;
+cpp_quote("#endif")
+#endif // _DEFINE_BASIC_NT_DEFS_
+
 /*
  * N.B. We use PVOID for the internal pointers because we will convert the
  * SD to relative anyway.
