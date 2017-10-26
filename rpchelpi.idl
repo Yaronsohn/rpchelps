@@ -24,6 +24,8 @@ typedef [transmit_as(XMIT_TYPE)] const char *LPCONFIDENTIALSTR;
 typedef [transmit_as(XMIT_TYPE)] const wchar_t *LPMULTIWSTR;
 typedef [transmit_as(XMIT_TYPE)] const wchar_t *LPCONFIDENTIALWSTR;
 
+typedef [transmit_as(XMIT_TYPE)] const void *LPREMOTE_POINTER;
+
 cpp_quote("")
 cpp_quote("#define XMIT_TYPE_SIZE(DataSize) (sizeof(XMIT_TYPE) + (DataSize))")
 cpp_quote("")

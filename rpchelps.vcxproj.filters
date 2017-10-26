@@ -30,6 +30,9 @@
     <ClCompile Include="xmittype.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rmtptr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="rpchelp.idl">
