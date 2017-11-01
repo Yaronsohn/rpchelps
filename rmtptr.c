@@ -31,10 +31,10 @@ LPREMOTE_POINTER_to_xmit(
 {
     ULONG size = 0;
 
-    if (RemotePointer)
+    if (*RemotePointer)
     {
 #ifdef _WIN64
-        if ((ULONG64)RemotePointer & 0xFFFFFFFF00000000)
+        if ((ULONG64)(*RemotePointer) & 0xFFFFFFFF00000000)
         {
             size = sizeof(ULONG64);
         }
@@ -61,9 +61,11 @@ LPREMOTE_POINTER_from_xmit(
     {
     case 0: *RemotePointer = NULL; break;
     case sizeof(ULONG): *RemotePointer = (PVOID)(*((PULONG)Xmit->Data)); break;
+#ifdef _WIN64
     case sizeof(ULONG64): *RemotePointer = (PVOID)(*((PULONG64)Xmit->Data)); break;
+#endif
     default:
-        RaiseNonContinuableException(ERROR_INVALID_DATA);
+        RaiseNonContinuableException(ERROR_NOT_SUPPORTED);
     }
 }
 
