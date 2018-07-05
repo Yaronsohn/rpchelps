@@ -59,8 +59,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <Import Condition="Exists('$(SolutionDir)config\Prometheus.SDK.props')"
-          Project="$(SolutionDir)config\Prometheus.SDK.props" />
+  <Import Condition="Exists('$(SolutionDir)config\Prometheus.SDK.props')" Project="$(SolutionDir)config\Prometheus.SDK.props" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
@@ -88,8 +87,7 @@
   <!--Set up parameters according to the subsystem selected-->
   <Import Project="$(SolutionDir)config\PostPropertyGroup.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Import Condition="Exists('$(SolutionDir)config\PostProject.targets')"
-          Project="$(SolutionDir)config\PostProject.targets" />
+  <Import Condition="Exists('$(SolutionDir)config\PostProject.targets')" Project="$(SolutionDir)config\PostProject.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

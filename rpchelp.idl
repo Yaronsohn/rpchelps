@@ -1,12 +1,12 @@
 /* %%COPYRIGHT%% */
 
 import "Unknwn.Idl";
+import "ntdefext.h";
 
 cpp_quote("")
 cpp_quote("/* %%COPYRIGHT%% */")
 cpp_quote("")
 
-#define _DEFINE_BASIC_NT_DEFS_
 #include "rpchelpi.idl"
 
 cpp_quote("/*++")
