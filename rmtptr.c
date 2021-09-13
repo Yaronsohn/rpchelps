@@ -60,7 +60,7 @@ LPREMOTE_POINTER_from_xmit(
     switch (Xmit->Size)
     {
     case 0: *RemotePointer = NULL; break;
-    case sizeof(ULONG): *RemotePointer = (PVOID)(*((PULONG)Xmit->Data)); break;
+    case sizeof(ULONG): *RemotePointer = ULongToPtr(*((PULONG)Xmit->Data)); break;
 #ifdef _WIN64
     case sizeof(ULONG64): *RemotePointer = (PVOID)(*((PULONG64)Xmit->Data)); break;
 #endif
