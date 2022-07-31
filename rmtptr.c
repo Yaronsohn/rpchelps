@@ -20,6 +20,10 @@
 #endif
 #endif
 
+/* GLOBALS ********************************************************************/
+
+ULONG_PTR PointerSalt = 0;
+
 /* FUNCTIONS ******************************************************************/
 
 void
@@ -30,11 +34,14 @@ LPREMOTE_POINTER_to_xmit(
     )
 {
     ULONG size = 0;
+    ULONG_PTR ptr = 0;
 
     if (*RemotePointer)
     {
+        ptr = ((ULONG_PTR)*RemotePointer) ^ PointerSalt;
+
 #ifdef _WIN64
-        if ((ULONG64)(*RemotePointer) & 0xFFFFFFFF00000000)
+        if (ptr & 0xFFFFFFFF00000000)
         {
             size = sizeof(ULONG64);
         }
@@ -47,7 +54,7 @@ LPREMOTE_POINTER_to_xmit(
 #endif
     }
 
-    *Xmit = XMITTYPE_TypeToXmit(0, RemotePointer, size);
+    *Xmit = XMITTYPE_TypeToXmit(0, &ptr, size);
 }
 
 void
@@ -60,9 +67,9 @@ LPREMOTE_POINTER_from_xmit(
     switch (Xmit->Size)
     {
     case 0: *RemotePointer = NULL; break;
-    case sizeof(ULONG): *RemotePointer = ULongToPtr(*((PULONG)Xmit->Data)); break;
+    case sizeof(ULONG): *RemotePointer = (PVOID)(((ULONG_PTR)*((PULONG)Xmit->Data)) ^ PointerSalt); break;
 #ifdef _WIN64
-    case sizeof(ULONG64): *RemotePointer = (PVOID)(*((PULONG64)Xmit->Data)); break;
+    case sizeof(ULONG64): *RemotePointer = (PVOID)(*((PULONG64)Xmit->Data) ^ PointerSalt); break;
 #endif
     default:
         RaiseNonContinuableException(ERROR_NOT_SUPPORTED);

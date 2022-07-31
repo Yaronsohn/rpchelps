@@ -8,7 +8,9 @@ cpp_quote("/* %%COPYRIGHT%% */")
 cpp_quote("")
 
 #include "rpchelpi.idl"
-
+cpp_quote("")
+cpp_quote("extern ULONG_PTR PointerSalt;")
+cpp_quote("")
 cpp_quote("/*++")
 cpp_quote("VOID")
 cpp_quote("WINAPI")
