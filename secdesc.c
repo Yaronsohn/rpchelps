@@ -34,24 +34,52 @@ SECURITY_DESCRIPTOR_to_xmit(
 
     if (SecurityDescriptor)
     {
-        /* Calculate the size of a relative SD version */
-        if (!MakeSelfRelativeSD(SecurityDescriptor, NULL, &size)
-            &&
-            GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+        SECURITY_DESCRIPTOR_CONTROL Control;
+        DWORD dwRevision;
+
+        //
+        // Make sure we've dealing with a valid descriptor.
+        //
+        if (!IsValidSecurityDescriptor(SecurityDescriptor))
+        {
+            RaiseNonContinuableException(ERROR_INVALID_SECURITY_DESCR);
+        }
+
+        if (!GetSecurityDescriptorControl(SecurityDescriptor, &Control, &dwRevision))
         {
             RaiseNonContinuableException(GetLastError());
         }
 
-        RelativeSD = MIDL_user_allocate(size);
-        if (!RelativeSD)
+        //
+        // If the descriptor is already in a self-relative form, simply pass the original
+        // pointer.
+        //
+        if ((Control & SE_SELF_RELATIVE) == 0)
         {
-            RaiseNonContinuableException(GetLastError());
-        }
+            /* Calculate the size of a relative SD version */
+            if (!MakeSelfRelativeSD(SecurityDescriptor, NULL, &size)
+                &&
+                GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+            {
+                RaiseNonContinuableException(GetLastError());
+            }
 
-        if (!MakeSelfRelativeSD(SecurityDescriptor, RelativeSD, &size))
+            RelativeSD = MIDL_user_allocate(size);
+            if (!RelativeSD)
+            {
+                RaiseNonContinuableException(GetLastError());
+            }
+
+            if (!MakeSelfRelativeSD(SecurityDescriptor, RelativeSD, &size))
+            {
+                MIDL_user_free(RelativeSD);
+                RaiseNonContinuableException(GetLastError());
+            }
+        }
+        else
         {
-            MIDL_user_free(RelativeSD);
-            RaiseNonContinuableException(GetLastError());
+            size = GetSecurityDescriptorLength(SecurityDescriptor);
+            RelativeSD = SecurityDescriptor;
         }
     }
 
@@ -61,7 +89,10 @@ SECURITY_DESCRIPTOR_to_xmit(
     }
     __finally
     {
-        MIDL_user_free(RelativeSD);
+        if (RelativeSD && RelativeSD != SecurityDescriptor)
+        {
+            MIDL_user_free(RelativeSD);
+        }
     }
 }
 
